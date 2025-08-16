@@ -11,7 +11,7 @@ WORKDIR /app
 
 
 # Copy the built jar from the builder stage
-COPY --from=builder /app/Something/target/*.jar app.jar
+COPY --from=builder /app/Springboot-Modules/Something/target/*.jar app.jar
 
 # Expose the port your Spring Boot app runs on (default is 8080)
 EXPOSE 8080
