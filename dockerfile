@@ -3,6 +3,7 @@ FROM openjdk:21-jdk-slim as builder
 WORKDIR /app
 COPY . .
 RUN ./mvnw clean package -DskipTests
+RUN ls -R
 
 # Stage 2: Create the final, smaller image using a JRE 21 runtime
 FROM openjdk:21-slim
