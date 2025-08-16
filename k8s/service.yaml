@@ -1,0 +1,25 @@
+# This file tells Kubernetes how to expose your application to network traffic.
+apiVersion: v1
+kind: Service
+metadata:
+  # The name of your service
+  name: my-spring-app-service
+spec:
+  # This setting is very important.
+  # 'LoadBalancer' tells Kubernetes you want to expose this service externally.
+  # - In a real cloud like AWS or GCP, this would create an expensive cloud load balancer.
+  # - In Docker Desktop, it cleverly makes the service available on your host machine (your Windows PC).
+  type: LoadBalancer
+  # This is the crucial link! The service will look for all Pods
+  # that have the label 'app: my-spring-app', which are the ones
+  # created by your deployment.yaml.
+  selector:
+    app: my-spring-app
+  ports:
+    # This section defines the port mapping.
+    - port: 80
+      # This is the external port that the service will be available on.
+      # So, you will access your app on http://localhost:80 on your Windows PC.
+      targetPort: 8080
+      # This is the internal port of your container that traffic should be sent to.
+      # It must match the 'containerPort' in your deployment.yaml.

@@ -1,0 +1,48 @@
+# This file tells Kubernetes how to run instances (Pods) of your application.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # The name of your deployment
+  name: my-spring-app
+spec:
+  # Run 2 identical copies of your application for high availability
+  replicas: 2
+  # This tells the Deployment how to find the Pods it manages
+  selector:
+    matchLabels:
+      app: my-spring-app
+  # This is the template for creating each Pod
+  template:
+    metadata:
+      # Pods will get this label, which matches the selector above
+      labels:
+        app: my-spring-app
+    spec:
+      containers:
+        - name: my-spring-app
+          # IMPORTANT: This is the Docker image that Kubernetes will pull.
+          # The CI/CD pipeline is responsible for building and pushing this image.
+          # Make sure to replace 'yourdockerhubusername' with your actual Docker Hub username.
+          image: hunterXdk/my-spring-repo:latest
+          ports:
+            # Expose port 8080 inside the container
+            - containerPort: 8080
+          # This section defines the environment variables for your Spring Boot application.
+          env:
+            - name: DB_URL
+              value: "jdbc:mysql://your-db-host:3306/mydatabase" # Update this if needed
+            # This is the crucial part for secrets.
+            # It tells the container to get the value for DB_USERNAME from the Kubernetes secret we just created.
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  # The name of the secret you created with 'kubectl create secret'
+                  name: db-credentials
+                  # The key within that secret to use for the value
+                  key: username
+            # This does the same for the database password.
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-credentials
+                  key: password
