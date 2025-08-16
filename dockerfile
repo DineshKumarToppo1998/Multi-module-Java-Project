@@ -5,7 +5,7 @@ COPY . .
 RUN ./mvnw clean package -DskipTests
 
 # Stage 2: Create the final, smaller image using a JRE 21 runtime
-FROM openjdk:21-jre-slim
+FROM openjdk:21-slim
 WORKDIR /app
 
 
